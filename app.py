@@ -16,10 +16,10 @@ pipe = artifact["pipeline"]
 cat_cols = artifact["cat_cols"]
 num_cols = artifact["num_cols"]
 median_num = artifact["median_num"]
-st.title("Car Price Prediction (Ridge + OneHot)")
-st.write("Загрузите данные для EDA и/или CSV для предсказаний, либо введите признаки вручную.")
+st.title("Car Price Prediction")
+st.write("Загрузите данные для EDA или CSV для предсказаний, либо введите признаки вручную.")
 st.header("EDA")
-eda_file = st.file_uploader("Загрузите CSV для EDA (например, train/test)", type=["csv"], key="eda")
+eda_file = st.file_uploader("Загрузите CSV для EDA", type=["csv"], key="eda")
 
 if eda_file is not None:
     df_eda = pd.read_csv(eda_file)
@@ -58,15 +58,15 @@ def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     needed = set(cat_cols + num_cols)
     missing = [c for c in needed if c not in df.columns]
     if missing:
-        raise ValueError(f"В входном файле не хватает колонок: {missing}")
+        raise ValueError(f"Во входном файле не хватает колонок: {missing}")
 
     return df[cat_cols + num_cols]
 
 if mode == "CSV":
-    pred_file = st.file_uploader("Загрузите CSV с признаками авто (без selling_price)", type=["csv"], key="pred")
+    pred_file = st.file_uploader("Загрузите CSV с признаками авто", type=["csv"], key="pred")
     if pred_file is not None:
         df_in = pd.read_csv(pred_file)
-        st.write("Входные данные (превью):")
+        st.write("Входные данные:")
         st.dataframe(df_in.head(20), use_container_width=True)
 
         try:
@@ -86,7 +86,7 @@ if mode == "CSV":
             st.error(str(e))
 
 else:
-    st.subheader("Ручной ввод признаков (1 авто)")
+    st.subheader("Ручной ввод признаков")
     cols2 = st.columns(2)
     manual = {}
 
@@ -111,8 +111,7 @@ else:
         except Exception as e:
             st.error(str(e))
 
-st.header("Веса (коэффициенты) модели")
-
+st.header("Веса модели")
 model = pipe.named_steps["model"]
 pre = pipe.named_steps["preprocess"]
 
